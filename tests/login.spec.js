@@ -2,6 +2,8 @@ import { test, expect } from '@playwright/test';
 import { obterCodigo2FA } from '../support/db';
 import { LoginPage } from '../pages/LoginPage';
 import { DashPage } from '../pages/DashPage';
+import { cleanJobs, getJob } from '../support/redis';
+
 
 test('Validar realização de login com dados válidos.', async ({ page }) => {
 
@@ -13,15 +15,23 @@ test('Validar realização de login com dados válidos.', async ({ page }) => {
     password: '147258'
   }
 
+  await cleanJobs(); // Limpara todos os jobs da fila do Redis.
+
   await loginPage.acessaPagina();
   await loginPage.informaCpf(user.cpf);
   await loginPage.informaSenha(user.password);
   await loginPage.waitForTwoFactorSection();
-  const code = await obterCodigo2FA();
+
+  const code = await getJob();      // recupera código 2FA direto da fila do Redis.
+  // const code = await obterCodigo2FA(user.cpf);       // recupera código 2FA vis base de dados.
   loginPage.informa2FA(code);
+
   await expect(await dashPage.obterSaldo()).toHaveText('R$ 5.000,00');
 
 });
+
+
+
 
 test('Validar que login não é realizado quando código de autenticação é inválido.', async ({ page }) => {
   
