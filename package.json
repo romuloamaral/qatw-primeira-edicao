@@ -21,6 +21,8 @@
     "@types/node": "^25.6.0"
   },
   "dependencies": {
+    "allure-commandline": "^2.38.1",
+    "allure-playwright": "^3.7.1",
     "bullmq": "^5.76.4",
     "pg-promise": "^12.6.2"
   }
