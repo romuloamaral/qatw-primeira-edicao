@@ -6,3 +6,18 @@ RUN apt-get update && apt-get install -y \
 
 ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
+
+# # > PRIMEIRA VERSÃO COM ERRO DE IMAGEM CUSTOMIZADA <
+# # Usando a imagem base Playwright
+# FROM mcr.microsoft.com/playwright:v1.59.1-noble
+
+# # Instalando dependencias e o OpenJDK 21
+# RUN apt-get update && apt-get install -y \
+#     wget \
+#     unzip \
+#     openjdk-21-jdk \
+#     && apt-get clean
+
+# # Configurado a variável de ambiente JAVA_HOME
+# ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+# ENV PATH="${JAVA_HOME}/bin:${PATH}"
