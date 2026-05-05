@@ -8,7 +8,8 @@ export class LoginPage {
     }
 
     async acessaPagina(){
-        await this.page.goto('http://paybank-mf-auth:3000/');
+        //await this.page.goto('http://paybank-mf-auth:3000/');
+        await this.page.goto(process.env.BASE_URL);
     }
 
     async informaCpf(cpf){

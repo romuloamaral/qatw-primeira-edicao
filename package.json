@@ -18,7 +18,8 @@
   "homepage": "https://github.com/romuloamaral/qatw-primeira-edicao#readme",
   "devDependencies": {
     "@playwright/test": "^1.59.1",
-    "@types/node": "^25.6.0"
+    "@types/node": "^25.6.0",
+    "dotenv": "^17.4.2"
   },
   "dependencies": {
     "allure-commandline": "^2.38.1",

@@ -9,25 +9,15 @@ test('Validar realização de login com dados válidos.', async ({ page }) => {
 
   const loginPage = new LoginPage(page);
   const dashPage  = new DashPage(page);
-  
-  const user = {
-    cpf: '00000014141',
-    password: '147258'
-  }
-
   await cleanJobs(); // Limpara todos os jobs da fila do Redis.
-
   await loginPage.acessaPagina();
-  await loginPage.informaCpf(user.cpf);
-  await loginPage.informaSenha(user.password);
+  await loginPage.informaCpf(process.env.TEST_USER);
+  await loginPage.informaSenha(process.env.TEST_USER_PASSWORD);
   await loginPage.waitForTwoFactorSection();
-
-  const code = await getJob();      // recupera código 2FA direto da fila do Redis.
+  const code = await getJob();                          // recupera código 2FA direto da fila do Redis.
   // const code = await obterCodigo2FA(user.cpf);       // recupera código 2FA vis base de dados.
   loginPage.informa2FA(code);
-
   await expect(await dashPage.obterSaldo()).toHaveText('R$ 5.000,00');
-
 });
 
 
@@ -36,19 +26,11 @@ test('Validar realização de login com dados válidos.', async ({ page }) => {
 test('Validar que login não é realizado quando código de autenticação é inválido.', async ({ page }) => {
   
   const loginPage = new LoginPage(page);
-
-  const user = {
-    cpf: '00000014141',
-    password: '147258'
-  }
-
   await loginPage.acessaPagina();
-  await loginPage.informaCpf(user.cpf);
-  await loginPage.informaSenha(user.password);
+  await loginPage.informaCpf(process.env.TEST_USER);
+  await loginPage.informaSenha(process.env.TEST_USER_PASSWORD);
   await loginPage.informa2FA('123456');
-
   await expect(page.locator('span')).toContainText('Código inválido. Por favor, tente novamente.');
-
 });
 
 // test('Validar realização de login com dados válidos.', async ({ page }) => {
