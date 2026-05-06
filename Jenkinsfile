@@ -7,6 +7,8 @@ pipeline {
 
     environment {
         BASE_URL = 'http://paybank-mf-auth:3000/'
+        TEST_USER = credentials('test-user')
+        TEST_USER_PASSWORD = credentials('test-user-password')
     }
 
     stages {
