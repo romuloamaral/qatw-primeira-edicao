@@ -1,37 +1,88 @@
+
 import { test, expect } from '@playwright/test';
 import { obterCodigo2FA } from '../support/db';
 import { LoginPage } from '../pages/LoginPage';
 import { DashPage } from '../pages/DashPage';
 import { cleanJobs, getJob } from '../support/redis';
 
-
 test('Validar realização de login com dados válidos.', async ({ page }) => {
 
   const loginPage = new LoginPage(page);
   const dashPage  = new DashPage(page);
-  await cleanJobs(); // Limpara todos os jobs da fila do Redis.
-  await loginPage.acessaPagina();
-  await loginPage.informaCpf(process.env.TEST_USER);
-  await loginPage.informaSenha(process.env.TEST_USER_PASSWORD);
-  await loginPage.waitForTwoFactorSection();
-  const code = await getJob();                          // recupera código 2FA direto da fila do Redis.
-  // const code = await obterCodigo2FA(user.cpf);       // recupera código 2FA vis base de dados.
-  loginPage.informa2FA(code);
-  await expect(await dashPage.obterSaldo()).toHaveText('R$ 5.000,00');
+
+  await cleanJobs();
+
+  await loginPage.acessarPagina();
+  await loginPage.preencherCpf(process.env.TEST_USER);
+  await loginPage.preencherSenha(process.env.TEST_USER_PASSWORD);
+
+  await loginPage.aguardarTela2FA();
+
+  const code = await getJob();
+
+  await loginPage.preencher2FA(code);
+
+  await expect(dashPage.saldo).toHaveText('R$ 5.000,00');
+
 });
-
-
 
 
 test('Validar que login não é realizado quando código de autenticação é inválido.', async ({ page }) => {
   
   const loginPage = new LoginPage(page);
-  await loginPage.acessaPagina();
-  await loginPage.informaCpf(process.env.TEST_USER);
-  await loginPage.informaSenha(process.env.TEST_USER_PASSWORD);
-  await loginPage.informa2FA('123456');
-  await expect(page.locator('span')).toContainText('Código inválido. Por favor, tente novamente.');
+
+  await loginPage.acessarPagina();
+  await loginPage.preencherCpf(process.env.TEST_USER);
+  await loginPage.preencherSenha(process.env.TEST_USER_PASSWORD);
+
+  await loginPage.aguardarTela2FA();
+
+  await loginPage.preencher2FA('123456');
+
+  await expect(loginPage.erroCodigoInvalido)
+  .toHaveText('Código inválido. Por favor, tente novamente.');
+  
 });
+
+// // CODE OLD - ATUALIZAÇÃO PARA CORREÇÃO DO PADRÃO POM
+
+// import { test, expect } from '@playwright/test';
+// import { obterCodigo2FA } from '../support/db';
+// import { LoginPage } from '../pages/LoginPage';
+// import { DashPage } from '../pages/DashPage';
+// import { cleanJobs, getJob } from '../support/redis';
+
+
+// test('Validar realização de login com dados válidos.', async ({ page }) => {
+
+//   const loginPage = new LoginPage(page);
+//   const dashPage  = new DashPage(page);
+//   await cleanJobs(); // Limpara todos os jobs da fila do Redis.
+//   await loginPage.acessaPagina();
+//   await loginPage.informaCpf(process.env.TEST_USER);
+//   await loginPage.informaSenha(process.env.TEST_USER_PASSWORD);
+//   await loginPage.waitForTwoFactorSection();
+//   const code = await getJob();                          // recupera código 2FA direto da fila do Redis.
+//   // const code = await obterCodigo2FA(user.cpf);       // recupera código 2FA vis base de dados.
+//   loginPage.informa2FA(code);
+//   await expect(await dashPage.obterSaldo()).toHaveText('R$ 5.000,00');
+// });
+
+
+
+
+// test('Validar que login não é realizado quando código de autenticação é inválido.', async ({ page }) => {
+  
+//   const loginPage = new LoginPage(page);
+//   await loginPage.acessaPagina();
+//   await loginPage.informaCpf(process.env.TEST_USER);
+//   await loginPage.informaSenha(process.env.TEST_USER_PASSWORD);
+//   await loginPage.informa2FA('123456');
+//   await expect(page.locator('span')).toContainText('Código inválido. Por favor, tente novamente.');
+// });
+
+
+// // ############### FIM ################
 
 // test('Validar realização de login com dados válidos.', async ({ page }) => {
 
