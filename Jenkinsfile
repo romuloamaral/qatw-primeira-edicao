@@ -5,6 +5,10 @@ pipeline {
         }
     }
 
+    environment {
+        BASE_URL = 'http://paybank-mf-auth:3000/'
+    }
+
     stages {
         stage('Node.js Deps') {
             steps {
