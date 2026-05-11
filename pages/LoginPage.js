@@ -18,6 +18,7 @@ export class LoginPage {
         });
 
         this.erroCodigoInvalido = page.getByText('Código inválido. Por favor, tente novamente.');
+        this.erroCPFInvalido = page.getByText('CPF inválido. Por favor, verifique.'); 
     }
 
     // Navegação

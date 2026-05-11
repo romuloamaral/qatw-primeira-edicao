@@ -44,6 +44,19 @@ test('Validar que login não é realizado quando código de autenticação é in
   
 });
 
+
+test('Validar que login não é realizado quando o CPF é inválido.', async ({ page }) => {
+  
+  const loginPage = new LoginPage(page);
+
+  await loginPage.acessarPagina();
+  await loginPage.preencherCpf('12312312377');
+
+  await expect(loginPage.erroCPFInvalido)
+  .toHaveText('CPF inválido. Por favor, verifique.');
+  
+});
+
 // // CODE OLD - ATUALIZAÇÃO PARA CORREÇÃO DO PADRÃO POM
 
 // import { test, expect } from '@playwright/test';
