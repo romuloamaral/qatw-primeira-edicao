@@ -2,19 +2,31 @@
 import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
+import { defineBddConfig } from 'playwright-bdd';
 
-// Carrega o .env
-dotenv.config();
-// Carrega o .env (com suporte a múltiplos ambientes)
+// // Carrega o .env OLD
+// dotenv.config();
+
+dotenv.config({
+  path: path.resolve(process.cwd(), '.env')
+});
+
+// // Carrega o .env (com suporte a múltiplos ambientes)
 // dotenv.config({
 //   path: path.resolve(process.cwd(), `.env.${process.env.ENV || 'dev'}`)
 // });
+
+const testDir = defineBddConfig({
+  features: 'features/**/*.feature',
+  steps: 'steps/**/*.js',
+  outputDir: '.features-gen',
+});
 
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
-  testDir: './tests',
+  testDir,
 
   fullyParallel: true,
 

@@ -18,7 +18,8 @@ export class LoginPage {
         });
 
         this.erroCodigoInvalido = page.getByText('Código inválido. Por favor, tente novamente.');
-        this.erroCPFInvalido = page.getByText('CPF inválido. Por favor, verifique.'); 
+        this.erroCPFInvalido = page.getByText('CPF inválido. Por favor, verifique.');
+        this.mensagemErro = page.locator('span').filter({ hasText: /.+/ }).first(); 
     }
 
     // Navegação
@@ -50,6 +51,11 @@ export class LoginPage {
 
     async aguardarTela2FA() {
         await this.headerVerificacao.waitFor({ timeout: 5000 });
+    }
+
+    async obterTextoMensagemErro() {
+        await this.mensagemErro.waitFor();
+        return (await this.mensagemErro.textContent()).trim();
     }
 
 }

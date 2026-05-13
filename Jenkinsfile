@@ -19,8 +19,12 @@ pipeline {
         }
         stage('E2E Tests') {
             steps {
-                sh 'npx playwright test'
-                allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: 'allure-results']]
+                //sh 'npx playwright test'
+                sh 'npm run test:bdd'
+                allure includeProperties: false,
+                jdk: '',
+                resultPolicy: 'LEAVE_AS_IS',
+                results: [[path: 'allure-results']]
             }
         }
     }
