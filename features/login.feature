@@ -19,7 +19,7 @@ Feature: Login
     When informa CPF "11122233377"
     Then deve visualizar a mensagem "CPF inválido. Por favor, verifique."
 
-  @debug
+
   Scenario: Login com senha inválida
     Given que o usuário acessa a página de login
     When informa CPF válido
