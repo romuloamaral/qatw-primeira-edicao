@@ -4,6 +4,7 @@ import { createBdd } from 'playwright-bdd';
 import { LoginPage } from '../pages/LoginPage.js';
 import { DashPage } from '../pages/DashPage.js';
 import { cleanJobs, getJob } from '../support/redis.js';
+import { sensitiveHeaders } from 'node:http2';
 // import { obterCodigo2FA } from '../support/db.js';
 
 const { Given, When, Then } = createBdd(test);
@@ -62,6 +63,17 @@ When('informa CPF {string}', async ({ page }, cpf) => {
   await loginPage.preencherCpf(cpf);
 });
 
+When('informa CPF válido', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+
+  await loginPage.preencherCpf(process.env.TEST_USER);
+});
+
+When('iforma senha {string}', async ({ page }, senha) => {
+  const loginPage = new LoginPage(page);
+
+  await loginPage.preencherSenha(senha);
+});
 
 /* ======================================================
    THEN - Validações
