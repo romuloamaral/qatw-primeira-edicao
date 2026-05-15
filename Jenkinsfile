@@ -12,6 +12,11 @@ pipeline {
     }
 
     stages {
+        stage('Clean Workspace') {
+            steps {
+                sh 'rm -rf .features-gen test-results playwright-report allure-results'
+            }
+        }
         stage('Node.js Deps') {
             steps {
                 sh 'npm ci'
