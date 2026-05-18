@@ -1,3 +1,8 @@
+import { expect } from '@playwright/test';
+import { cleanJobs, getJob } from '../support/redis.js';
+// import { obterCodigo2FA } from '../support/db.js';     // Se quiser recuperar o código 2FA via base de dados utilize este import
+
+
 export class LoginPage {
     
     constructor(page) {
@@ -17,12 +22,21 @@ export class LoginPage {
             name: 'Verificação em duas etapas'
         });
 
+        this.tituloSaldoDisponivel = page.getByRole('heading', {
+            name: 'Saldo disponível'
+        });
+
         this.erroCodigoInvalido = page.getByText('Código inválido. Por favor, tente novamente.');
         this.erroCPFInvalido = page.getByText('CPF inválido. Por favor, verifique.');
         this.mensagemErro = page.locator('span').filter({ hasText: /.+/ }).first(); 
     }
 
-    // Navegação
+
+/* ======================================================
+    ### Navegação - Ações
+====================================================== */
+
+
     async acessarPagina() {
         if (!process.env.BASE_URL) {
             throw new Error('BASE_URL não definido no .env');
@@ -31,7 +45,6 @@ export class LoginPage {
         await this.page.goto(process.env.BASE_URL);
     }
 
-    // Ações
     async preencherCpf(cpf) {
         await this.cpfInput.fill(cpf);
         await this.continuarButton.click();
@@ -50,12 +63,34 @@ export class LoginPage {
     }
 
     async aguardarTela2FA() {
-        await this.headerVerificacao.waitFor({ timeout: 5000 });
+        await this.headerVerificacao.waitFor({ timeout: 15000 });
     }
 
     async obterTextoMensagemErro() {
         await this.mensagemErro.waitFor();
         return (await this.mensagemErro.textContent()).trim();
+    }
+
+    async aguardarTelaDashboard() {
+        await this.headerVerificacao.waitFor({ timeout: 15000 });
+    }
+
+    async realizarLogin(cpf, senha){
+
+        await this.acessarPagina();
+        await this.preencherCpf(cpf);
+        await this.preencherSenha(senha);
+
+        await cleanJobs();
+        await this.aguardarTela2FA();
+        const codigo = await getJob();
+        await this.preencher2FA(codigo);
+
+        // Valida login com sucesso
+        await expect(this.tituloSaldoDisponivel).toBeVisible({ timeout: 15000 });
+
+        // Log informativo
+        console.log('✅ Login realizado com sucesso.');
     }
 
 }

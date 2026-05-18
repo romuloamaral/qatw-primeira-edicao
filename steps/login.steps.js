@@ -5,7 +5,7 @@ import { LoginPage } from '../pages/LoginPage.js';
 import { DashPage } from '../pages/DashPage.js';
 import { cleanJobs, getJob } from '../support/redis.js';
 import { sensitiveHeaders } from 'node:http2';
-// import { obterCodigo2FA } from '../support/db.js';
+// import { obterCodigo2FA } from '../support/db.js';     // Se quiser recuperar o código 2FA via base de dados utilize este import
 
 const { Given, When, Then } = createBdd(test);
 
